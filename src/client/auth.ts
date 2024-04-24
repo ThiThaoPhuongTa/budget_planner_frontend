@@ -1,14 +1,19 @@
-import axios from "axios";
+import { User } from "../domain/user";
+import { request } from "./request";
 
-axios.defaults.baseURL = "http://localhost:8080";
-axios.defaults.headers.post['Content-Type'] = 'application/json';
-axios.defaults.withCredentials = true;
-
-export const me: () => Promise<any> = async () => {
+export const me: () => Promise<User> = async () => {
   try {
-    const response = await axios.get('/me');
+    const response = await request.get('/me');
     return response.data;
   } catch (error) {
     return null;
   }
-}
+};
+
+export const logout = async () => {
+  try {
+    await request.get('/logout');
+  } catch (error) {
+    console.error(error);
+  }
+};

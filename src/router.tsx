@@ -1,18 +1,28 @@
-import { createBrowserRouter, redirect } from "react-router-dom";
-import App from "./App";
-import Login from "./Login";
+import { Navigate, createBrowserRouter, redirect } from "react-router-dom";
+import Login from "./components/Login";
 import { me } from "./client/auth";
+import Plan from "./components/Plan";
+import Transfer from "./components/Transfer";
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <Plan />,
     loader: handleUnauthorized
   },
   {
    path: '/login',
    element: <Login />
-  }
+  },
+  {
+    path: '/transfer',
+    element: <Transfer/>,
+    loader: handleUnauthorized
+  },
+  {
+    path: '*',
+    element: <Navigate to="/"/>
+   }
 ]);
 
 async function handleUnauthorized() {
@@ -21,4 +31,4 @@ async function handleUnauthorized() {
     return redirect("/login");
   }
   return null;
-};
+}
