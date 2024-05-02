@@ -34,7 +34,7 @@ const expensesSlice = createSlice({
   },
 });
 
-export const { addExpense, updateExpense } = expensesSlice.actions;
+export const { addExpense, updateExpense, removeExpense } = expensesSlice.actions;
 
 export const currentExpenses = (state: RootState) => state.expenses;
 

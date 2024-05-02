@@ -2,7 +2,8 @@ export enum Variant {
   Danger="danger",
   Success="success",
   Primary="primary",
-  Secondary="secondary"
+  Secondary="secondary",
+  Transparent="transparent"
 }
 interface Props {
   handleClick: () => void,
@@ -14,7 +15,8 @@ function BaseButton({ variant, handleClick, children }: Props) {
     danger: "btn-danger",
     success: "btn-success",
     primary: "btn-primary",
-    secondary: "btn-outline-primary"
+    secondary: "btn-outline-primary",
+    transparent: "btn-transparent"
   }
 
   return (

@@ -8,6 +8,7 @@ import BaseButton, { Variant } from './BaseButton'
 import { useImmer } from 'use-immer';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { UpdateExpensePayload, addExpense, currentExpenses, updateExpense } from '../store/expensesSlice';
+import { PieChart, Pie, Cell } from 'recharts';
 
 function Plan() {
   const expenses = useAppSelector(currentExpenses);
@@ -31,6 +32,12 @@ function Plan() {
     })
   }
 
+  const handleRemoveIncome = (index: number) => {
+    setIncomes((draft) => {
+      draft.splice(index)
+    })
+  }
+
   const handleAddExpense = () => {
     dispatch(addExpense({
       description: '',
@@ -40,13 +47,62 @@ function Plan() {
   }
 
   const handleChangeExpense = (index: number, nextExpense: Expense) => {
-    dispatch(updateExpense({index: index, expense: nextExpense} satisfies UpdateExpensePayload))
+    dispatch(updateExpense({ index: index, expense: nextExpense } satisfies UpdateExpensePayload))
   }
+
+  const totalExpensesChartData = [
+    { name: 'Total Expenses', value: totalExpenses },
+    { name: 'Balance', value: totalIncome - totalExpenses }
+  ]
+
+  const expensesChartData = expenses.map(expense => {
+    return ({
+      name: expense.description, value: expense.bankTransfer.amount
+    })
+  })
+
+  const COLORS = ["#FFBB28", "#FF8042", "#0088FE", "#00C49F",];
 
   return (
     <BaseLayout>
       <form>
         <h2>Month</h2>
+        <div className='d-flex'>
+          <div>
+            <PieChart width={200} height={200}>
+              <Pie
+                data={totalExpensesChartData}
+                cx={100}
+                cy={100}
+                labelLine={false}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {totalExpensesChartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+            </PieChart>
+          </div>
+          <div>
+            <PieChart width={200} height={200}>
+              <Pie
+                data={expensesChartData}
+                cx={100}
+                cy={100}
+                labelLine={false}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {expensesChartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length + 2]} />
+                ))}
+              </Pie>
+            </PieChart>
+          </div>
+        </div>
 
         <section>
           <div className="d-flex justify-content-between gap-3">
@@ -55,7 +111,15 @@ function Plan() {
           </div>
           {
             incomes.map((income, index) => {
-              return <IncomeItem key={index} index={index} income={income} handleChange={handleChangeIncome} />
+              return (
+                <IncomeItem
+                  key={index}
+                  index={index}
+                  income={income}
+                  handleChange={handleChangeIncome}
+                  handleRemove={handleRemoveIncome}
+                />
+              )
             })
           }
           <div className='mt-2'>

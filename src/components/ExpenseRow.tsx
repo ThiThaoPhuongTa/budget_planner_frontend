@@ -4,6 +4,9 @@ import CreatableSelect from "react-select/creatable"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { Link } from "react-router-dom"
 import _ from "lodash"
+import BaseButton, { Variant } from "./BaseButton"
+import { useAppDispatch } from "../store/hooks"
+import { removeExpense } from "../store/expensesSlice"
 
 interface Props {
   index: number,
@@ -21,8 +24,15 @@ function ExpenseRow({ index, expense, handleChange }: Props) {
     label: description, value: description
   }))
 
+  const dispatch = useAppDispatch();
+
   return (
     <tr>
+      <td>
+        <BaseButton variant={Variant.Transparent} handleClick={() => dispatch(removeExpense(index))}>
+          <Icon icon="zondicons:minus-outline" style={{color: 'red'}}/>
+        </BaseButton>
+      </td>
       <td>
         <CreatableSelect
           className="w-100"

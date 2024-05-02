@@ -1,18 +1,21 @@
 import CurrencyInput from "react-currency-input-field";
 import { Income, IncomeType } from "../domain/plan";
 import Select from "react-select";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import BaseButton, { Variant } from "./BaseButton";
 
 interface Props {
   index: number,
   income: Income,
-  handleChange: (index: number, income: Income) => void
+  handleChange: (index: number, income: Income) => void,
+  handleRemove: (index: number) => void
 }
 
 interface TypeOption {
   label: IncomeType, value: IncomeType
 }
 
-function IncomeItem({ index, income, handleChange }: Props) {
+function IncomeItem({ index, income, handleChange, handleRemove }: Props) {
 
   const typeOptions: TypeOption[] = Object.values(IncomeType).map(type => ({
     label: type, value: type
@@ -20,11 +23,14 @@ function IncomeItem({ index, income, handleChange }: Props) {
 
   return (
     <div className="d-flex justify-content-between gap-3 mt-2">
-      <div className="col-auto">
+      <BaseButton variant={Variant.Transparent} handleClick={() => handleRemove(index)}>
+        <Icon icon="zondicons:minus-outline" style={{ color: 'red' }} />
+      </BaseButton>
+      <div>
         <Select<TypeOption>
           options={typeOptions}
-          value={{label: income.type, value: income.type}}
-          onChange={(option) => handleChange(index, { ...income, type: option?.value || IncomeType.Other})}>
+          value={{ label: income.type, value: income.type }}
+          onChange={(option) => handleChange(index, { ...income, type: option?.value || IncomeType.Other })}>
         </Select>
       </div>
       <div className="flex-grow-1">
