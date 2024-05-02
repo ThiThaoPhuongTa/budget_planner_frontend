@@ -6,20 +6,14 @@ import ExpenseTable from './ExpenseTable'
 import BaseLayout from './BaseLayout'
 import BaseButton, { Variant } from './BaseButton'
 import { useImmer } from 'use-immer';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { UpdateExpensePayload, addExpense, currentExpenses, updateExpense } from '../store/expensesSlice';
 
 function Plan() {
-  const [expenses, setExpenses] = useImmer<Expense[]>([{
-    description: "Food",
-    bankTransfer: {bankAccount: {bankId: "970423", bankCode: "TPB", accountNumber: "123456"}, amount: 1000000, purpose: "Budger planner transfer Food"},
-    done: true
-  },
-  {
-    description: "Electric Billing",
-    done: false,
-    bankTransfer:{bankAccount: {bankId: "", bankCode: "", accountNumber: ""}, amount: 1000000, purpose: "Budger planner transfer Electric Billing"},
-    
-  }]);
-  const [incomes, setIncomes] = useImmer<Income[]>([{ amount: 10000000, type: IncomeType.Salary}])
+  const expenses = useAppSelector(currentExpenses);
+  const dispatch = useAppDispatch();
+
+  const [incomes, setIncomes] = useImmer<Income[]>([{ amount: 10000000, type: IncomeType.Salary }])
 
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.bankTransfer.amount, 0)
 
@@ -27,7 +21,7 @@ function Plan() {
 
   const handleAddIncome = () => {
     setIncomes((draft) => {
-      draft.push({amount: 0, type: IncomeType.Other})
+      draft.push({ amount: 0, type: IncomeType.Other })
     })
   }
 
@@ -38,19 +32,15 @@ function Plan() {
   }
 
   const handleAddExpense = () => {
-    setExpenses((draft) => {
-      draft.push({
-        description: '',
-        bankTransfer: {bankAccount: {bankId: '', bankCode: '', accountNumber: ''}, amount: 0, purpose: ''},
-        done: false
-      })
-    })
+    dispatch(addExpense({
+      description: '',
+      bankTransfer: { bankAccount: { bankId: '', bankCode: '', accountNumber: '' }, amount: 0, purpose: '' },
+      done: false
+    } satisfies Expense))
   }
 
   const handleChangeExpense = (index: number, nextExpense: Expense) => {
-    setExpenses((draft) => {
-      draft[index] = nextExpense;
-    });
+    dispatch(updateExpense({index: index, expense: nextExpense} satisfies UpdateExpensePayload))
   }
 
   return (
@@ -65,7 +55,7 @@ function Plan() {
           </div>
           {
             incomes.map((income, index) => {
-              return <IncomeItem  key={index} index={index} income={income} handleChange={handleChangeIncome}/>
+              return <IncomeItem key={index} index={index} income={income} handleChange={handleChangeIncome} />
             })
           }
           <div className='mt-2'>
@@ -80,7 +70,7 @@ function Plan() {
             <h3>Expsenses</h3>
             <div>{formatCurrency(totalExpenses)}</div>
           </div>
-          <ExpenseTable expenses={expenses} handleChange={handleChangeExpense}/>
+          <ExpenseTable expenses={expenses} handleChange={handleChangeExpense} />
           <div className='mt-2'>
             <BaseButton handleClick={handleAddExpense} variant={Variant.Danger}>
               Add <Icon icon="gg:add" />

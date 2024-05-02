@@ -15,7 +15,7 @@ export const router = createBrowserRouter([
    element: <Login />
   },
   {
-    path: '/transfer',
+    path: '/transfer/:expense',
     element: <Transfer/>,
     loader: handleUnauthorized
   },

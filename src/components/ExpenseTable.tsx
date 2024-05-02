@@ -11,6 +11,7 @@ function ExpenseTable({ expenses, handleChange }: Props) {
     <table className="table">
       <thead>
         <tr>
+          <th scope="col"></th>
           <th scope="col">Description</th>
           <th scope="col">Amount</th>
           <th scope="col">Account</th>

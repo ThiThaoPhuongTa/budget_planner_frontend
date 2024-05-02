@@ -2,7 +2,8 @@ import CurrencyInput from "react-currency-input-field"
 import { Expense, ExpenseDescription } from "../domain/plan"
 import CreatableSelect from "react-select/creatable"
 import { Icon } from "@iconify/react/dist/iconify.js"
-import BaseButton, { Variant } from "./BaseButton"
+import { Link } from "react-router-dom"
+import _ from "lodash"
 
 interface Props {
   index: number,
@@ -20,10 +21,6 @@ function ExpenseRow({ index, expense, handleChange }: Props) {
     label: description, value: description
   }))
 
-  function handleTransfer() {
-    console.log("transfer")
-  }
-
   return (
     <tr>
       <td>
@@ -37,7 +34,7 @@ function ExpenseRow({ index, expense, handleChange }: Props) {
       </td>
       <td>
         <CurrencyInput
-          className='px-2 py-1 bg-transparent dotted-input w-50'
+          className='px-2 py-1 bg-transparent dotted-input'
           intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
           value={expense.bankTransfer.amount}
           onValueChange={(value, name, values) => handleChange(index, { ...expense, bankTransfer: {...expense.bankTransfer, amount: Number(value || 0) }})}
@@ -48,9 +45,9 @@ function ExpenseRow({ index, expense, handleChange }: Props) {
           <div>
             <p>{[expense.bankTransfer.bankAccount.bankCode, expense.bankTransfer.bankAccount.accountNumber].join(" - ")} <span><Icon icon="flat-color-icons:ok" /></span></p>
           </div> :
-          <BaseButton variant={Variant.Secondary} handleClick={handleTransfer}>
+          <Link to={`transfer/${_.kebabCase(expense.description)}`} className="btn btn-outline-primary">
             <Icon icon="fa6-solid:money-bill-transfer" />
-          </BaseButton>
+          </Link>
         }
       </td>
     </tr>
