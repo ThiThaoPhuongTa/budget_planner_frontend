@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { me, logout } from "../client/auth";
 import { useNavigate } from "react-router-dom";
+import { logout, me } from "../client/auth";
 import { User } from "../domain/user";
+import BaseButton, { Variant } from "./BaseButton";
 
 function BaseLayout({children}: {children: React.ReactNode}) {
   const [user, setUser] = useState<User>()
@@ -18,17 +19,13 @@ function BaseLayout({children}: {children: React.ReactNode}) {
 
   return (
     <>
-      <div className='d-flex'>
-        <div className='flex-grow-1'>
+      <div className='flex justify-between'>
           <p className="read-the-docs">
             Hello, {user?.name}
           </p>
-        </div>
-        <div>
-          <button onClick={handleLogout} className='btn btn-primary'>Logout</button>
-        </div>
+          <BaseButton handleClick={handleLogout} variant={Variant.Secondary}>Logout</BaseButton>
       </div>
-      <div className='mx-auto col-md-6 col-12 bg-light shadow rounded p-4'>
+      <div className='mt-2 mx-auto xl:w-1/2 w-full bg-base-200/90 shadow-lg rounded-box p-4'>
         {children}
       </div>
     </>

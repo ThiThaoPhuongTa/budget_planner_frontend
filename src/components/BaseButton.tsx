@@ -12,15 +12,15 @@ interface Props {
 }
 function BaseButton({ variant, handleClick, children }: Props) {
   const variantClassNames = {
-    danger: "btn-danger",
+    danger: "btn-error",
     success: "btn-success",
     primary: "btn-primary",
     secondary: "btn-outline-primary",
-    transparent: "btn-transparent"
+    transparent: "hover:bg-transparent border-none shadow-none"
   }
 
   return (
-    <button className={`btn ${variantClassNames[variant]}`} onClick={(e) => {
+    <button className={`btn flex items-center ${variantClassNames[variant]}`} onClick={(e) => {
       e.preventDefault();
       handleClick();
     }}>

@@ -1,7 +1,7 @@
-import CurrencyInput from "react-currency-input-field";
-import { Income, IncomeType } from "../domain/plan";
-import Select from "react-select";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import CurrencyInput from "react-currency-input-field";
+import Select from "react-select";
+import { Income, IncomeType } from "../domain/plan";
 import BaseButton, { Variant } from "./BaseButton";
 
 interface Props {
@@ -22,20 +22,31 @@ function IncomeItem({ index, income, handleChange, handleRemove }: Props) {
   }));
 
   return (
-    <div className="d-flex justify-content-between gap-3 mt-2">
+    <div className="flex justify-between gap-3 mt-2 items-center">
       <BaseButton variant={Variant.Transparent} handleClick={() => handleRemove(index)}>
         <Icon icon="zondicons:minus-outline" style={{ color: 'red' }} />
       </BaseButton>
       <div>
         <Select<TypeOption>
+          className="bg-base-100 rounded-3xl"
           options={typeOptions}
           value={{ label: income.type, value: income.type }}
-          onChange={(option) => handleChange(index, { ...income, type: option?.value || IncomeType.Other })}>
+          onChange={(option) => handleChange(index, { ...income, type: option?.value || IncomeType.Other })}
+          styles={{
+            control: (base) => ({
+              ...base,
+              borderColor: 'transparent',
+              borderRadius: 20,
+              height: 48,
+              background: 'inherit',
+            }),
+          }}
+        >
         </Select>
       </div>
-      <div className="flex-grow-1">
+      <div className="grow">
         <CurrencyInput
-          className='form-control'
+          className='input w-full'
           intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
           value={income.amount}
           onValueChange={(value, name, values) => handleChange(index, { ...income, amount: Number(value || 0) })}

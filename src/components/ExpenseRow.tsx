@@ -1,12 +1,12 @@
-import CurrencyInput from "react-currency-input-field"
-import { Expense, ExpenseDescription } from "../domain/plan"
-import CreatableSelect from "react-select/creatable"
 import { Icon } from "@iconify/react/dist/iconify.js"
-import { Link } from "react-router-dom"
 import _ from "lodash"
-import BaseButton, { Variant } from "./BaseButton"
-import { useAppDispatch } from "../store/hooks"
+import CurrencyInput from "react-currency-input-field"
+import { Link } from "react-router-dom"
+import CreatableSelect from "react-select/creatable"
+import { Expense, ExpenseDescription } from "../domain/plan"
 import { removeExpense } from "../store/expensesSlice"
+import { useAppDispatch } from "../store/hooks"
+import BaseButton, { Variant } from "./BaseButton"
 
 interface Props {
   index: number,
@@ -35,16 +35,25 @@ function ExpenseRow({ index, expense, handleChange }: Props) {
       </td>
       <td>
         <CreatableSelect
-          className="w-100"
+          className="bg-base-100 rounded-3xl"
           isClearable
           options={descriptionOptions}
           value={{ label: expense.description, value: expense.description }}
           onChange={(option) => handleChange(index, { ...expense, description: option?.value || "" })}
+          styles={{
+            control: (base) => ({
+              ...base,
+              borderColor: 'transparent',
+              borderRadius: 20,
+              height: 48,
+              background: 'inherit',
+            }),
+          }}
         />
       </td>
       <td>
         <CurrencyInput
-          className='px-2 py-1 bg-transparent dotted-input'
+          className='input'
           intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
           value={expense.bankTransfer.amount}
           onValueChange={(value, name, values) => handleChange(index, { ...expense, bankTransfer: {...expense.bankTransfer, amount: Number(value || 0) }})}
@@ -55,7 +64,7 @@ function ExpenseRow({ index, expense, handleChange }: Props) {
           <div>
             <p>{[expense.bankTransfer.bankAccount.bankCode, expense.bankTransfer.bankAccount.accountNumber].join(" - ")} <span><Icon icon="flat-color-icons:ok" /></span></p>
           </div> :
-          <Link to={`transfer/${_.kebabCase(expense.description)}`} className="btn btn-outline-primary">
+          <Link to={`transfer/${_.kebabCase(expense.description)}`} className="btn btn-outline btn-info">
             <Icon icon="fa6-solid:money-bill-transfer" />
           </Link>
         }

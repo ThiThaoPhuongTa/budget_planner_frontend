@@ -1,14 +1,14 @@
-import { Expense, Income, IncomeType, formatCurrency } from '../domain/plan'
 import { Icon } from '@iconify/react';
+import { Expense, Income, IncomeType, formatCurrency } from '../domain/plan';
 
-import IncomeItem from './IncomeItem'
-import ExpenseTable from './ExpenseTable'
-import BaseLayout from './BaseLayout'
-import BaseButton, { Variant } from './BaseButton'
+import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis, YAxis } from 'recharts';
 import { useImmer } from 'use-immer';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { UpdateExpensePayload, addExpense, currentExpenses, updateExpense } from '../store/expensesSlice';
-import { PieChart, Pie, Cell } from 'recharts';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import BaseButton, { Variant } from './BaseButton';
+import BaseLayout from './BaseLayout';
+import ExpenseTable from './ExpenseTable';
+import IncomeItem from './IncomeItem';
 
 function Plan() {
   const expenses = useAppSelector(currentExpenses);
@@ -51,8 +51,8 @@ function Plan() {
   }
 
   const totalExpensesChartData = [
-    { name: 'Total Expenses', value: totalExpenses },
-    { name: 'Balance', value: totalIncome - totalExpenses }
+    { name: 'Total Income', value: totalIncome },
+    { name: 'Total Expenses', value: totalExpenses }
   ]
 
   const expensesChartData = expenses.map(expense => {
@@ -61,29 +61,37 @@ function Plan() {
     })
   })
 
-  const COLORS = ["#FFBB28", "#FF8042", "#0088FE", "#00C49F",];
-
+  const COLORS = [
+    'text-primary',
+    'text-secondary',
+    'text-accent',
+    'text-success',
+    'text-warning',
+    'text-error',
+    'text-info',
+  ]
   return (
     <BaseLayout>
       <form>
         <h2>Month</h2>
-        <div className='d-flex'>
+        <div className='flex flex-wrap justify-center'>
           <div>
-            <PieChart width={200} height={200}>
-              <Pie
-                data={totalExpensesChartData}
-                cx={100}
-                cy={100}
-                labelLine={false}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {totalExpensesChartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-            </PieChart>
+            <BarChart
+              width={350}
+              height={300}
+              data={totalExpensesChartData}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Bar dataKey="value" fill="#8884d8" />
+            </BarChart>
           </div>
           <div>
             <PieChart width={200} height={200}>
@@ -93,11 +101,12 @@ function Plan() {
                 cy={100}
                 labelLine={false}
                 outerRadius={80}
-                fill="#8884d8"
+                // fill="currentColor"
+                // className='text-secondary'
                 dataKey="value"
               >
                 {expensesChartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length + 2]} />
+                  <Cell key={`cell-${index}`} fill='currentColor' className={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
             </PieChart>
@@ -105,8 +114,8 @@ function Plan() {
         </div>
 
         <section>
-          <div className="d-flex justify-content-between gap-3">
-            <h3>Income</h3>
+          <div className="flex justify-between gap-3 items-center">
+            <h3 className="text-lg font-medium text-success">Income</h3>
             <div>{formatCurrency(totalIncome)}</div>
           </div>
           {
@@ -130,8 +139,8 @@ function Plan() {
         </section>
 
         <section className='mt-4'>
-          <div className="d-flex justify-content-between gap-3">
-            <h3>Expsenses</h3>
+          <div className="flex justify-between gap-3">
+            <h3 className='text-lg font-medium text-error'>Expsenses</h3>
             <div>{formatCurrency(totalExpenses)}</div>
           </div>
           <ExpenseTable expenses={expenses} handleChange={handleChangeExpense} />
@@ -147,3 +156,4 @@ function Plan() {
 }
 
 export default Plan
+
