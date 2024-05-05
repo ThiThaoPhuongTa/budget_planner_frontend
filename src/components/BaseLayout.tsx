@@ -20,7 +20,7 @@ function BaseLayout({children}: {children: React.ReactNode}) {
   return (
     <>
       <div className='flex justify-between'>
-          <p className="read-the-docs">
+          <p>
             Hello, {user?.name}
           </p>
           <BaseButton handleClick={handleLogout} variant={Variant.Secondary}>Logout</BaseButton>

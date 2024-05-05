@@ -20,7 +20,7 @@ interface BankOption {
 const Option = (props: OptionProps<BankOption>) => {
   const { value } = props.data;
   return (
-    <div className="d-flex">
+    <div className="flex">
       <img src={`/src/assets/Bank/${value.code}.png`} style={{ width: '8%' }}></img>
       <components.Option {...props} />
     </div>
@@ -59,8 +59,9 @@ function Transfer() {
     <form>
       <BaseLayout>
         <h2>Transfer</h2>
-        <div className="d-flex flex-column gap-3" >
+        <div className="flex flex-col gap-3" >
           <Select<BankOption>
+            className="bg-base-100 rounded-3xl pl-1"
             options={banksOptions}
             components={{ Option }}
             placeholder="Choose a Bank"
@@ -74,9 +75,26 @@ function Transfer() {
               })
             }
             isDisabled={disabled}
+            styles={{
+              control: (base) => ({
+                ...base,
+                borderColor: 'transparent',
+                borderWidth: 1,
+                borderRadius: 30.4,
+                height: 48,
+                background: 'inherit',
+                ":hover": {borderColor: 'transparent'},
+                ":active": {borderStyle: 'double'},
+                paddingLeft: 0
+              }),
+              placeholder: (base) => ({
+                ...base,
+                opacity: 0.75
+              }),
+            }}
           />
           <input
-            className="form-control"
+            className="input"
             type="number"
             placeholder="Account number"
             value={expense?.bankTransfer.bankAccount.accountNumber}
@@ -88,13 +106,13 @@ function Transfer() {
             disabled={disabled}
           />
           <CurrencyInput
-            className="form-control"
+            className="input"
             disabled
             value={expense?.bankTransfer.amount}
             intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
           />
           <textarea
-            className="form-control"
+            className="textarea"
             value={expense?.bankTransfer.purpose}
             onChange={(e) => setExpense((draft) => {
               if (draft) {
@@ -104,7 +122,7 @@ function Transfer() {
             disabled={disabled}
           />
           {!disabled && (
-            <div className="d-flex flex-column mx-auto gap-3">
+            <div className="flex flex-col mx-auto gap-3">
               <QRCodeSVG value={expense ? encodeBankTransfer(expense.bankTransfer) : ""} />
               <BaseButton variant={Variant.Primary} handleClick={handleDone}>
                 Done

@@ -1,7 +1,6 @@
 import { Icon } from '@iconify/react';
 import { Expense, Income, IncomeType, formatCurrency } from '../domain/plan';
 
-import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis, YAxis } from 'recharts';
 import { useImmer } from 'use-immer';
 import { UpdateExpensePayload, addExpense, currentExpenses, updateExpense } from '../store/expensesSlice';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -9,6 +8,19 @@ import BaseButton, { Variant } from './BaseButton';
 import BaseLayout from './BaseLayout';
 import ExpenseTable from './ExpenseTable';
 import IncomeItem from './IncomeItem';
+import { CategoryScale, LinearScale, BarElement, Title, Chart, Tooltip, Legend, ArcElement, Colors, ChartData } from 'chart.js';
+import { Bar, Pie } from 'react-chartjs-2';
+
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Colors
+);
 
 function Plan() {
   const expenses = useAppSelector(currentExpenses);
@@ -50,66 +62,56 @@ function Plan() {
     dispatch(updateExpense({ index: index, expense: nextExpense } satisfies UpdateExpensePayload))
   }
 
-  const totalExpensesChartData = [
-    { name: 'Total Income', value: totalIncome },
-    { name: 'Total Expenses', value: totalExpenses }
-  ]
+  const totalExpensesChartConfig = {
+    data: {
+      datasets: [{
+        label: 'Total Money',
+        data: [{label: 'Total Incomes', value: totalIncome}, {label: 'Total Expenses', value: totalExpenses}]
+      }]
+    }  satisfies ChartData <'bar', {label: string, value: number} []>,
+    options: {
+      responsive: true,
+      locale: 'vi-VN',
+      parsing: {
+        xAxisKey: 'label',
+        yAxisKey: 'value'
+      }
+    }
+  }
 
-  const expensesChartData = expenses.map(expense => {
-    return ({
-      name: expense.description, value: expense.bankTransfer.amount
-    })
-  })
+  const expensesChartConfig = {
+    data: {
+      labels: expenses.map((expense) => expense.description),
+      datasets: [{
+        label: 'Expense Amount',
+        data: expenses
+      }]
+    } satisfies ChartData <'pie', Expense []>,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        colors: {
+          forceOverride: true
+        }
+      },
+      parsing: {
+        key: 'bankTransfer.amount'
+      }
+    }
 
-  const COLORS = [
-    'text-primary',
-    'text-secondary',
-    'text-accent',
-    'text-success',
-    'text-warning',
-    'text-error',
-    'text-info',
-  ]
+  }
+
   return (
     <BaseLayout>
       <form>
         <h2>Month</h2>
         <div className='flex flex-wrap justify-center'>
-          <div>
-            <BarChart
-              width={350}
-              height={300}
-              data={totalExpensesChartData}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Bar dataKey="value" fill="#8884d8" />
-            </BarChart>
+          <div className='w-1/2'>
+            <Bar data={totalExpensesChartConfig.data} options={totalExpensesChartConfig.options}/>
           </div>
-          <div>
-            <PieChart width={200} height={200}>
-              <Pie
-                data={expensesChartData}
-                cx={100}
-                cy={100}
-                labelLine={false}
-                outerRadius={80}
-                // fill="currentColor"
-                // className='text-secondary'
-                dataKey="value"
-              >
-                {expensesChartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill='currentColor' className={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-            </PieChart>
+          <div className='w-1/2'>
+            <Pie data={expensesChartConfig.data} options={expensesChartConfig.options}/>
           </div>
         </div>
 

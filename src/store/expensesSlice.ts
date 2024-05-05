@@ -9,13 +9,13 @@ export interface UpdateExpensePayload {
 
 const initialState = [{
   description: "Food",
-  bankTransfer: {bankAccount: {bankId: "970423", bankCode: "TPB", accountNumber: "123456"}, amount: 1000000, purpose: "Budger planner transfer Food"},
+  bankTransfer: {bankAccount: {bankId: "970423", bankCode: "TPB", accountNumber: "123456"}, amount: 1000000, purpose: "Budget planner transfer Food"},
   done: true
 },
 {
   description: "Electric Billing",
   done: false,
-  bankTransfer:{bankAccount: {bankId: "", bankCode: "", accountNumber: ""}, amount: 1000000, purpose: "Budger planner transfer Electric Billing"},
+  bankTransfer:{bankAccount: {bankId: "", bankCode: "", accountNumber: ""}, amount: 1000000, purpose: "Budget planner transfer Electric Billing"},
 }] satisfies Expense[]
 
 const expensesSlice = createSlice({
